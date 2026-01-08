@@ -364,10 +364,10 @@ header:after {
 }
 
 .control-buttons {
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   margin-top: 0.3125rem;
   gap: 1rem;
 }
@@ -755,4 +755,84 @@ button:active {
   background-color: #d1fae5;
   border-radius: 10px;
   border: 2px solid #047857;
+}
+
+/* 설명 팝업 스타일 */
+.explanation-content {
+  max-width: 600px;
+}
+
+.explanation-content h2 {
+  color: #e0a800;
+  text-align: center;
+  margin-bottom: 1.5rem;
+  font-size: 1.8rem;
+}
+
+.explanation-text {
+  background-color: #fffbf0;
+  padding: 1.5rem;
+  border-radius: 10px;
+  margin-bottom: 1.5rem;
+  border: 2px dashed #f4c84d;
+}
+
+.explanation-text .question {
+  color: #d1464c;
+  font-weight: 700;
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.explanation-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.explanation-list li {
+  padding: 0.8rem;
+  margin-bottom: 0.8rem;
+  background-color: #e8f8f5;
+  border-radius: 8px;
+  border-left: 4px solid #f4c84d;
+  font-size: 1.05rem;
+  line-height: 1.6;
+  color: #333;
+}
+
+.explanation-list li:last-child {
+  margin-bottom: 0;
+}
+
+#close-explanation {
+  background-color: #f4c84d;
+  color: white;
+  font-size: 1.2rem;
+  padding: 0.8rem 2.5rem;
+}
+
+#close-explanation:hover {
+  background-color: #e0a800;
+}
+
+/* 리셋 버튼은 눈에 띄게 빨간색으로 유지 */
+#reset-button {
+  background-color: #dc2626;
+  color: white;
+  height: 44px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 0.7rem 2rem;
+  border: 2px solid #991b1b;
+  transition: all 0.3s ease;
+}
+
+#reset-button:hover {
+  background-color: #991b1b;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(220, 38, 38, 0.3);
 }
