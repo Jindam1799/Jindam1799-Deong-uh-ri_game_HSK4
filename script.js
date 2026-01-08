@@ -8,11 +8,16 @@ document.addEventListener('DOMContentLoaded', function () {
   const reviewPopup = document.getElementById('review-popup');
   const reviewSentences = document.getElementById('review-sentences');
   const finishReviewBtn = document.getElementById('finish-review');
+  const explanationPopup = document.getElementById('explanation-popup');
+  const closeExplanationBtn = document.getElementById('close-explanation');
+  const explanationQuestion = document.getElementById('explanation-question');
+  const explanationList = document.getElementById('explanation-list');
 
   const koreanSentence = document.getElementById('korean-sentence');
   const availableCards = document.getElementById('available-cards');
   const placedCards = document.getElementById('placed-cards');
   const checkButton = document.getElementById('check-button');
+  const resetButton = document.getElementById('reset-button');
   const resultMessage = document.getElementById('result-message');
   const currentDaySpan = document.getElementById('current-day');
   const sentenceCountSpan = document.getElementById('sentence-count');
@@ -67,7 +72,7 @@ document.addEventListener('DOMContentLoaded', function () {
       prepareSentences(sentenceData[dayKey]);
       daySelection.classList.add('hidden');
       gameArea.classList.remove('hidden');
-      loadSentence();
+      loadSentence(); // 선택한 Day의 첫 문장/레벨 로드
     } else {
       alert('해당 Day의 데이터가 없습니다.');
     }
@@ -113,6 +118,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
       if (currentLevelIndex < currentLevels.length) {
         const sentence = currentLevels[currentLevelIndex];
+
         koreanSentence.textContent = sentence.korean;
 
         // 문장 번호 계산
@@ -120,7 +126,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // 문장 카운트 표시 변경
         if (sentence.isFinal) {
-          sentenceCountSpan.innerHTML = `<span style="color: #047857; font-weight: 700;">🎉${sentenceNumber}번째 문장 완성🎉</span>`;
+          sentenceCountSpan.innerHTML = `<span style="color: #d1464c; font-weight: 700;">🎉${sentenceNumber}번째 문장 완성🎉</span>`;
           koreanSentence.classList.add('final-sentence');
         } else {
           sentenceCountSpan.textContent = `🧱${sentenceNumber}번째 문장의 덩어리🧱`;
@@ -138,6 +144,51 @@ document.addEventListener('DOMContentLoaded', function () {
       // 모든 문장 완료
       showReviewPopup();
     }
+  }
+
+  // 설명 팝업 표시
+  function showExplanationPopup(content) {
+    // 질문 설정
+    explanationQuestion.textContent = content.question;
+
+    // 설명 리스트 설정
+    explanationList.innerHTML = '';
+    content.items.forEach((item) => {
+      const li = document.createElement('li');
+      li.textContent = item;
+      explanationList.appendChild(li);
+    });
+
+    explanationPopup.classList.remove('hidden');
+    // 타이머 정지
+    resetTimer();
+  }
+
+  // 설명 팝업 닫기 및 게임 계속
+  function closeExplanationPopup() {
+    explanationPopup.classList.add('hidden');
+
+    const sentence = currentLevels[currentLevelIndex];
+    koreanSentence.textContent = sentence.korean;
+
+    // 문장 번호 계산
+    const sentenceNumber = calculateSentenceNumber();
+
+    // 문장 카운트 표시 변경
+    if (sentence.isFinal) {
+      sentenceCountSpan.innerHTML = `<span style="color: #d1464c; font-weight: 700;">🎉${sentenceNumber}번째 문장 완성🎉</span>`;
+      koreanSentence.classList.add('final-sentence');
+    } else {
+      sentenceCountSpan.textContent = `🧱${sentenceNumber}번째 문장의 덩어리🧱`;
+      koreanSentence.classList.remove('final-sentence');
+    }
+
+    // 카드 생성
+    createCards(sentence);
+
+    // 타이머 시작
+    resetTimer();
+    startTimer();
   }
 
   // 카드 생성
@@ -289,11 +340,11 @@ document.addEventListener('DOMContentLoaded', function () {
         // 다음 문제로 이동
         if (currentLevelIndex < currentLevels.length - 1) {
           currentLevelIndex++;
-          loadSentence();
+          loadSentence(); // 다음 레벨 문장 로드
         } else {
           currentLevelIndex = 0;
           currentSentenceIndex++;
-          loadSentence();
+          loadSentence(); // 다음 문장의 첫 레벨 로드
         }
       }, 10);
     } else {
@@ -314,6 +365,17 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     return true;
+  }
+
+  // 카드 리셋 함수
+  function resetCards() {
+    // placedCards에 있는 모든 카드를 availableCards로 이동
+    while (placedCards.firstChild) {
+      availableCards.appendChild(placedCards.firstChild);
+    }
+
+    // selectedCards 배열 초기화
+    selectedCards = [];
   }
 
   // 진행 상황 업데이트
@@ -404,6 +466,10 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 
   checkButton.addEventListener('click', checkAnswer);
+
+  resetButton.addEventListener('click', resetCards);
+
+  closeExplanationBtn.addEventListener('click', closeExplanationPopup);
 
   finishReviewBtn.addEventListener('click', function () {
     // Day 완료 기록
